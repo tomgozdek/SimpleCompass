@@ -2,7 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <data>
+        <variable
+            name="compassViewModel"
+            type="com.tomgozdek.simplecompass.ui.main.CompassViewModel" />
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -13,7 +17,8 @@
             android:id="@+id/compass"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:text="CompassFragment"
+            android:textSize="20sp"
+            android:text="@{compassViewModel.azimuthString}"
             app:layout_constraintBottom_toTopOf="@+id/latitudeInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

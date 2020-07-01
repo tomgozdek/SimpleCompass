@@ -8,10 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.tomgozdek.simplecompass.R
 import com.tomgozdek.simplecompass.databinding.CompassFragmentBinding
-import com.tomgozdek.simplecompass.toDegrees
 
 class CompassFragment : Fragment()
 {
@@ -23,11 +21,8 @@ class CompassFragment : Fragment()
     {
         binding = DataBindingUtil.inflate(inflater, R.layout.compass_fragment, container, false)
 
-        compassViewModel.getCompassLiveData().observe(viewLifecycleOwner,Observer { compassData ->
-            Log.d("Fragment", "On compass data - ${compassData.azimuth.toDegrees()}")
-        })
-
         binding.lifecycleOwner = viewLifecycleOwner
+        binding.compassViewModel = compassViewModel
 
         return binding.root
     }
