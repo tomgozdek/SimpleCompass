@@ -1,4 +1,4 @@
-package com.tomgozdek.simplecompass.ui.main
+package com.tomgozdek.simplecompass.compass
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

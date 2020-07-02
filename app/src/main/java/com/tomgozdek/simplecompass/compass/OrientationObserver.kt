@@ -1,4 +1,4 @@
-package com.tomgozdek.simplecompass.ui.main
+package com.tomgozdek.simplecompass.compass
 
 import android.content.Context
 import android.hardware.Sensor
@@ -39,7 +39,11 @@ class OrientationObserver(context: Context) : LiveData<OrientationDataModel>(), 
         val orientationData = FloatArray(3)
         SensorManager.getOrientation(rotationMatrix, orientationData)
 
-        return OrientationDataModel(orientationData[0],orientationData[1],orientationData[2])
+        return OrientationDataModel(
+            orientationData[0],
+            orientationData[1],
+            orientationData[2]
+        )
     }
 
     override fun onActive() {

@@ -5,13 +5,13 @@
     <data>
         <variable
             name="compassViewModel"
-            type="com.tomgozdek.simplecompass.ui.main.CompassViewModel" />
+            type="com.tomgozdek.simplecompass.compass.CompassViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.CompassFragment">
+        tools:context=".compass.CompassFragment">
 
         <TextView
             android:id="@+id/compass"

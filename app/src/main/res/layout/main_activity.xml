@@ -9,7 +9,7 @@
 
         <fragment
             android:id="@+id/compassFragment"
-            android:name="com.tomgozdek.simplecompass.ui.main.CompassFragment"
+            android:name="com.tomgozdek.simplecompass.compass.CompassFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
