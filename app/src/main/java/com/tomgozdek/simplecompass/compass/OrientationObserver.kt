@@ -49,7 +49,7 @@ class OrientationObserver(context: Context) : LiveData<OrientationDataModel>(), 
     override fun onActive() {
         super.onActive()
         listOf(accelerometer, magnetometer).forEach {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI)
         }
     }
 
