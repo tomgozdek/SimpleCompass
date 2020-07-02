@@ -11,7 +11,19 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="8dp"
         tools:context=".compass.CompassFragment">
+
+        <com.tomgozdek.simplecompass.compass.CompassRose
+            android:id="@+id/compassRose"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/compass"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="7"
+            app:directionLabelsSize="@dimen/compass_directions_labels_size"/>
 
         <TextView
             android:id="@+id/compass"
@@ -22,8 +34,8 @@
             app:layout_constraintBottom_toTopOf="@+id/latitudeInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_weight="8" />
+            app:layout_constraintTop_toBottomOf="@+id/compassRose"
+            app:layout_constraintVertical_weight="1" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/latitudeInput"
