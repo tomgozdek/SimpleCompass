@@ -18,35 +18,24 @@
             android:id="@+id/compassRose"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/compass"
+            app:layout_constraintBottom_toTopOf="@+id/latitudeInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_weight="7"
             app:directionLabelsSize="@dimen/compass_directions_labels_size"/>
 
-        <TextView
-            android:id="@+id/compass"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:textSize="20sp"
-            android:text="@{compassViewModel.azimuthString}"
-            app:layout_constraintBottom_toTopOf="@+id/latitudeInput"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/compassRose"
-            app:layout_constraintVertical_weight="1" />
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/latitudeInput"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:hint="LATITUDE"
-            app:layout_constraintBottom_toTopOf="@+id/longitudeInput"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/showDestinationBtn"
+            app:layout_constraintEnd_toStartOf="@id/longitudeInput"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/compass"
+            app:layout_constraintTop_toBottomOf="@+id/compassRose"
             app:layout_constraintVertical_weight="1"
+            app:layout_constraintHorizontal_weight="1"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -60,22 +49,34 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/longitudeInput"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:hint="LONGITUDE"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/showDestinationBtn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/latitudeInput"
-            app:layout_constraintVertical_weight="1">
+            app:layout_constraintStart_toEndOf="@+id/latitudeInput"
+            app:layout_constraintTop_toBottomOf="@+id/compassRose"
+            app:layout_constraintVertical_weight="1"
+            app:layout_constraintHorizontal_weight="1">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberSigned|numberDecimal"
                 android:onTextChanged="@{compassViewModel::onLongitudeChanged}"
-                app:longError="@{compassViewModel.isLongitudeValid}"/>/>
+                app:longError="@{compassViewModel.isLongitudeValid}"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <Button
+            android:id="@+id/showDestinationBtn"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/show_destination_btn_label"
+            style="@style/Theme.AppCompat.Light"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/latitudeInput"
+            app:layout_constraintVertical_weight="1"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
