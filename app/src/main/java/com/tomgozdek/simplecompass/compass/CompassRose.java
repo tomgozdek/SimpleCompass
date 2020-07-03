@@ -2,6 +2,7 @@ package com.tomgozdek.simplecompass.compass;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -18,12 +19,18 @@ import com.tomgozdek.simplecompass.R;
 public class CompassRose extends View {
     private Paint labelPaint;
     private Paint scalePaint;
+    private Paint markerPaint;
     private int width;
-    private int height;
     private String[] DIRECTIONS = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"};
     private float directionLabelSize = 80f;
     private VectorDrawableCompat compassNeedle;
+    private Bitmap bitmapMarker;
     private float rotationAngle = 45;
+    private float destinationAngle = 45;
+    private boolean showDestination = isInEditMode();
+
+    float originX;
+    float originY;
 
     public CompassRose(Context context) {
         this(context, null);
@@ -35,6 +42,18 @@ public class CompassRose extends View {
         parseAttributes(attrs);
         createPaints();
         createCompassNeedle();
+        createDestinationMarker();
+    }
+
+    private void createDestinationMarker() {
+        VectorDrawableCompat destinationMarker = VectorDrawableCompat.create(getResources(), R.drawable.destination_marker, null);
+        if(destinationMarker != null){
+            bitmapMarker = Bitmap.createBitmap(destinationMarker.getIntrinsicWidth(), destinationMarker.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmapMarker);
+            destinationMarker.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            destinationMarker.draw(canvas);
+            destinationMarker.setBounds(0,0,destinationMarker.getIntrinsicWidth(), destinationMarker.getIntrinsicHeight());
+        }
     }
 
     private void createCompassNeedle() {
@@ -68,6 +87,11 @@ public class CompassRose extends View {
         scalePaint.setColor(Color.LTGRAY);
         scalePaint.setStrokeWidth(3);
         scalePaint.setStyle(Style.STROKE);
+
+        markerPaint = new Paint();
+        markerPaint.setAntiAlias(true);
+        markerPaint.setStyle(Style.FILL);
+        markerPaint.setColor(Color.RED);
     }
 
 
@@ -76,69 +100,68 @@ public class CompassRose extends View {
         super.onDraw(canvas);
 
         drawNeedle(canvas);
-
-        float centerX = width/2f;
-        float centerY = height/2f;
-        canvas.rotate(rotationAngle, centerX, centerY);
-
-        drawCircles(canvas);
+        drawScale(canvas);
+        if(showDestination){
+            drawDestinationMarker(canvas);
+        }
         drawDirections(canvas);
     }
 
-    private void drawCircles(Canvas canvas) {
-        float centerX = width/2f;
-        float centerY = height/2f;
+    private void drawScale(Canvas canvas) {
 
-        double radius = (width - directionLabelSize * 3)/2;
-        double innerRadius = radius - directionLabelSize /2;
-        double innerInnerRadius = innerRadius - directionLabelSize /2;
-        double currentDegreeRadius;
+        float radius = width/2f;
 
-        for(double angle = 0d; angle <= 360; angle+=5){
+        canvas.save();
+        int angleStep = 5;
+        float startX = originX;
+        float startY = originY + radius * 0.9f;
+        float smallScaleEndY = originY + radius * 0.875f;
+        float largeScaleEndY = originY + radius * 0.85f;
 
-            float startX = (centerX + getCartesianX(radius, angle));
-            float startY = (centerY + getCartesianY(radius, angle));
-            currentDegreeRadius = angle % 10 == 0 ? innerRadius : innerInnerRadius;
-            float endX = (centerX + getCartesianX(currentDegreeRadius, angle));
-            float endY = (centerY + getCartesianY(currentDegreeRadius, angle));
-
-            canvas.drawLine(startX, startY, endX, endY, scalePaint);
+        for(double angle = 0d; angle <= 360; angle+=angleStep){
+            if(angle % 10 == 0){
+                canvas.drawLine(startX, startY, startX, largeScaleEndY, scalePaint);
+            } else {
+                canvas.drawLine(startX, startY, startX, smallScaleEndY, scalePaint);
+            }
+            canvas.rotate(angleStep, originX, originY);
         }
+        canvas.restore();
     }
 
     private void drawNeedle(Canvas canvas) {
-        float centerX = width/2f - compassNeedle.getIntrinsicWidth()/4f;
-        float centerY = height/2f - compassNeedle.getIntrinsicHeight()/2f;
+        float centerX = originX - compassNeedle.getIntrinsicWidth()/4f;
+        float centerY = originY - compassNeedle.getIntrinsicHeight()/2f;
         canvas.translate(centerX, centerY);
         compassNeedle.draw(canvas);
         canvas.translate(-centerX, -centerY);
     }
 
+    private void drawDestinationMarker(Canvas canvas) {
+        float radius = originX * 0.8f;
+        float posX = originX - bitmapMarker.getWidth()/4f;
+        float posY = (originY - radius) + bitmapMarker.getHeight()/2f;
+        canvas.save();
+        canvas.rotate(destinationAngle + rotationAngle, originX, originY);
+        canvas.drawBitmap(bitmapMarker, posX,posY, markerPaint);
+        canvas.restore();
+    }
+
 
     private void drawDirections(Canvas canvas) {
-        float centerX = width/2f;
-        float centerY = height/2f;
 
-        double radius = (width- directionLabelSize)/2;
+        float radius = (width - directionLabelSize)/2f;
+        canvas.save();
+        canvas.rotate(rotationAngle, originX, originY);
 
-        double angle = 0d;
         int angleChangeStep = 360 / DIRECTIONS.length;
+        float labelPosX = originX;
+        float labelPosY = (originY - radius) + (labelPaint.getTextSize()-labelPaint.descent())/2;
         for(String direction : DIRECTIONS){
-
-            float labelPosX = (centerX + (getCartesianX(radius, angle) - labelPaint.measureText(direction)/2));
-            float labelPosY = (centerY - getCartesianY(radius, angle)) + (labelPaint.getTextSize()-labelPaint.descent())/2;
-
-            canvas.drawText(direction, labelPosX, labelPosY, labelPaint);
-            angle+=angleChangeStep;
+            canvas.drawText(direction, labelPosX - labelPaint.measureText(direction)/2, labelPosY, labelPaint);
+            canvas.rotate(angleChangeStep, originX, originY);
         }
-    }
-
-    private float getCartesianY(double radius, double angle){
-        return (int) (radius * Math.cos(Math.toRadians(angle)));
-    }
-
-    private float getCartesianX(double radius, double angle){
-        return (int) (radius * Math.sin(Math.toRadians(angle)));
+        canvas.restore();
     }
 
     public void setAngle(int angle){
@@ -146,10 +169,19 @@ public class CompassRose extends View {
         invalidate();
     }
 
+    public void showDestinationMarker(boolean show){
+        showDestination = show;
+    }
+
+    public void setDestinationMarkerAzimuth(int azimuth){
+        destinationAngle = azimuth;
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         width = w;
-        height = w;
+        originX = width/2f;
+        originY = width/2f;
         h = w;
         oldh = oldw;
         super.onSizeChanged(w, h, oldw, oldh);
