@@ -18,12 +18,13 @@
             android:id="@+id/compassRose"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:directionLabelsSize="@dimen/compass_directions_labels_size"
             app:layout_constraintBottom_toTopOf="@+id/latitudeInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_weight="7"
-            app:directionLabelsSize="@dimen/compass_directions_labels_size"/>
+            app:setAngle="@{compassViewModel.azimuth}"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/latitudeInput"

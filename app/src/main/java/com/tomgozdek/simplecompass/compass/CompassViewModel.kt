@@ -18,12 +18,9 @@ class CompassViewModel(application: Application) : AndroidViewModel(application)
     }
     private val orientationLiveData : LiveData<OrientationDataModel> = OrientationObserver(application)
 
-    val azimuthString = Transformations.map(orientationLiveData){
-        it.azimuth.toDegrees().toString()
+    val azimuth = Transformations.map(orientationLiveData){
+        it.azimuth.toDegrees()
     }
-
-    fun getCompassLiveData() : LiveData<OrientationDataModel> = orientationLiveData
-
 
     val isLatitudeValid = Transformations.map(latitude){
         -90 <= it  && it <= 90

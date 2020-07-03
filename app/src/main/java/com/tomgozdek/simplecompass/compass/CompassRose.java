@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Typeface;
 import androidx.annotation.Nullable;
+import androidx.databinding.BindingAdapter;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import android.util.AttributeSet;
@@ -164,9 +165,14 @@ public class CompassRose extends View {
         canvas.restore();
     }
 
-    public void setAngle(int angle){
-        rotationAngle = (angle * -1);
-        invalidate();
+    @BindingAdapter({"setAngle"})
+    public static void setAngle(CompassRose view, int angle){
+        view.setRotationAngle(angle * -1);
+        view.invalidate();
+    }
+
+    private void setRotationAngle(int angle) {
+        rotationAngle = angle;
     }
 
     public void showDestinationMarker(boolean show){
