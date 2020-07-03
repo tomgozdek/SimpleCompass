@@ -9,5 +9,5 @@
     <string name="cancel">CANCEL</string>
     <string name="request">REQUEST</string>
     <string name="feature_denied_title">Feature denied</string>
-    <string name="feature_denied_msg">Destination location feature will be disabled since location permission was not granted. Permission can be granted in app settings page.</string>
+    <string name="feature_denied_msg">Destination location feature will be disabled since location permission was not granted, you want be able to use this feature until deleting the app and installing it again.... or you can just enable permission in app settings page!</string>
 </resources>
