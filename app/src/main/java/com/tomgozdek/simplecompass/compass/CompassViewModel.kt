@@ -1,6 +1,7 @@
 package com.tomgozdek.simplecompass.compass
 
 import android.app.Application
+import android.location.Location
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,11 +11,11 @@ import java.lang.NumberFormatException
 
 class CompassViewModel(application: Application) : AndroidViewModel(application)
 {
-    private val latitude = MutableLiveData<Double>()
-    private val longitude = MutableLiveData<Double>()
+    private val latitudeInput = MutableLiveData<Double>()
+    private val longitudeInput = MutableLiveData<Double>()
     init {
-        latitude.value = 0.0
-        longitude.value = 0.0
+        latitudeInput.value = 0.0
+        longitudeInput.value = 0.0
     }
     private val orientationLiveData : LiveData<OrientationDataModel> = OrientationObserver(application)
 
@@ -22,27 +23,55 @@ class CompassViewModel(application: Application) : AndroidViewModel(application)
         it.azimuth.toDegrees()
     }
 
-    val isLatitudeValid = Transformations.map(latitude){
+    val isLatitudeValid = Transformations.map(latitudeInput){
         -90 <= it  && it <= 90
     }
 
     @Suppress("UNUSED_PARAMETER")
     fun onLatitudeChanged(sequence: CharSequence, start : Int, before : Int, count : Int){
         try {
-            latitude.value = sequence.toString().toDouble()
+            latitudeInput.value = sequence.toString().toDouble()
         }
         catch (exception : NumberFormatException){}
     }
 
-    val isLongitudeValid = Transformations.map(longitude){
+    val isLongitudeValid = Transformations.map(longitudeInput){
         -180 <= it  && it <= 180
     }
 
     @Suppress("UNUSED_PARAMETER")
     fun onLongitudeChanged(sequence: CharSequence, start : Int, before : Int, count : Int){
         try {
-            longitude.value = sequence.toString().toDouble()
+            longitudeInput.value = sequence.toString().toDouble()
         }
         catch (exception : NumberFormatException){}
+    }
+
+    private val currentLocation = MutableLiveData<Location>()
+
+    private val showDestinationEvent = MutableLiveData<Boolean>()
+    val showDestination : LiveData<Boolean>
+        get() = showDestinationEvent
+
+//    val destinationBearing = Transformations.map(showDestinationEvent){showDestination ->
+//        if(showDestination){
+//            currentLocation.value?.let {
+//                it.bearingTo(
+//                    Location("NAME").apply {
+//                        latitude = latitudeInput.value!!
+//                        longitude= longitudeInput.value!!
+//                    }
+//                )
+//            }
+//        }
+//    }
+
+    val missingDestinationCoordinates : LiveData<Boolean?> = Transformations.map(showDestinationEvent){showDestination ->
+        if(showDestination && (latitudeInput.value == 0.0 || longitudeInput.value == 0.0)) true else null
+    }
+
+
+    fun showDestinationRequested() {
+        showDestinationEvent.value = true
     }
 }

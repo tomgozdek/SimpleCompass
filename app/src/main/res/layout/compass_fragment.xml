@@ -24,7 +24,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_weight="7"
-            app:setAngle="@{compassViewModel.azimuth}"/>
+            app:setAngle="@{compassViewModel.azimuth}"
+            app:showDestinationBearing= "@{compassViewModel.showDestination}"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/latitudeInput"
