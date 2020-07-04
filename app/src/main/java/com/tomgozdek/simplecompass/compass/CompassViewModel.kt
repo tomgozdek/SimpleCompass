@@ -18,6 +18,7 @@ class CompassViewModel(application: Application) : AndroidViewModel(application)
         longitudeInput.value = 0.0
     }
     private val orientationLiveData : LiveData<OrientationDataModel> = OrientationObserver(application)
+    private val locationLiveData = LocationObserver(application)
 
     val azimuth = Transformations.map(orientationLiveData){
         it.azimuth.toDegrees()
@@ -47,24 +48,18 @@ class CompassViewModel(application: Application) : AndroidViewModel(application)
         catch (exception : NumberFormatException){}
     }
 
-    private val currentLocation = MutableLiveData<Location>()
-
     private val showDestinationEvent = MutableLiveData<Boolean>()
     val showDestination : LiveData<Boolean>
         get() = showDestinationEvent
 
-//    val destinationBearing = Transformations.map(showDestinationEvent){showDestination ->
-//        if(showDestination){
-//            currentLocation.value?.let {
-//                it.bearingTo(
-//                    Location("NAME").apply {
-//                        latitude = latitudeInput.value!!
-//                        longitude= longitudeInput.value!!
-//                    }
-//                )
-//            }
-//        }
-//    }
+    val destinationBearing = Transformations.map(locationLiveData){location ->
+        location?.bearingTo(
+            Location("NAME").apply {
+                latitude = latitudeInput.value!!
+                longitude= longitudeInput.value!!
+            }
+        )?.toInt()
+    }
 
     val missingDestinationCoordinates : LiveData<Boolean?> = Transformations.map(showDestinationEvent){showDestination ->
         if(showDestination && (latitudeInput.value == 0.0 || longitudeInput.value == 0.0)) true else null
@@ -73,5 +68,6 @@ class CompassViewModel(application: Application) : AndroidViewModel(application)
 
     fun showDestinationRequested() {
         showDestinationEvent.value = true
+        locationLiveData.getLastLocation()
     }
 }

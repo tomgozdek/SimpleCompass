@@ -184,12 +184,13 @@ public class CompassRose extends View {
         showDestination = show;
     }
 
-    public static void setDestinationMarkerAzimuth(CompassRose view, int bearing){
-        view.setDestinationBearing(bearing);
+    @BindingAdapter({"setDestinationBearing"})
+    public static void setDestinationBearing(CompassRose view, int bearing){
+        view.setDestinationMarkerAzimuth(bearing);
         view.invalidate();
     }
 
-    private void setDestinationBearing(int bearing) {
+    private void setDestinationMarkerAzimuth(int bearing) {
         destinationAngle = bearing;
     }
 
