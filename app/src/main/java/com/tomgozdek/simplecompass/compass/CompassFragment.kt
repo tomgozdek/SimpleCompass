@@ -13,14 +13,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tomgozdek.simplecompass.R
 import com.tomgozdek.simplecompass.databinding.CompassFragmentBinding
 
 class CompassFragment : Fragment()
 {
-    private val compassViewModel : CompassViewModel by viewModels()
+    private lateinit var compassViewModel : CompassViewModel
+    private lateinit var compassViewModelFactory: CompasViewModelFactory
     private lateinit var binding: CompassFragmentBinding
 
     private val requestPermissionLauncher =
@@ -38,6 +39,11 @@ class CompassFragment : Fragment()
         binding = DataBindingUtil.inflate(inflater, R.layout.compass_fragment, container, false)
 
         binding.lifecycleOwner = viewLifecycleOwner
+
+        val application = requireContext().applicationContext
+        compassViewModelFactory = CompasViewModelFactory(OrientationObserver(application), LocationObserver(application))
+        compassViewModel = ViewModelProvider(this, compassViewModelFactory).get(CompassViewModel::class.java)
+
         binding.compassViewModel = compassViewModel
 
         binding.showDestinationBtn.setOnClickListener {

@@ -1,15 +1,14 @@
 package com.tomgozdek.simplecompass.compass
 
-import android.app.Application
 import android.location.Location
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import com.tomgozdek.simplecompass.toDegrees
 import java.lang.NumberFormatException
 
-class CompassViewModel(application: Application) : AndroidViewModel(application)
+class CompassViewModel(orientationObserver: OrientationObserver, locationObserver: LocationObserver) : ViewModel()
 {
     private val latitudeInput = MutableLiveData<Double>()
     private val longitudeInput = MutableLiveData<Double>()
@@ -17,8 +16,8 @@ class CompassViewModel(application: Application) : AndroidViewModel(application)
         latitudeInput.value = 0.0
         longitudeInput.value = 0.0
     }
-    private val orientationLiveData : LiveData<OrientationDataModel> = OrientationObserver(application)
-    private val locationLiveData = LocationObserver(application)
+    private val orientationLiveData : LiveData<OrientationDataModel> = orientationObserver
+    private val locationLiveData = locationObserver
 
     val azimuth = Transformations.map(orientationLiveData){
         it.azimuth.toDegrees()
